@@ -30,7 +30,6 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        // TODO return filtered list with excess. Implement by cycles
         List<UserMealWithExcess> returnMeals = new ArrayList<>();
         int currentCalories = 0;
         boolean excess = false;
