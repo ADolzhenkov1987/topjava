@@ -4,13 +4,12 @@ import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExcess;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.time.LocalDateTime.*;
+import static java.time.LocalDateTime.of;
 
 public class UserMealsUtil {
     public static void main(String[] args) {
