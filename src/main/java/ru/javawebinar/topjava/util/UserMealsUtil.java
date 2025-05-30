@@ -24,6 +24,7 @@ public class UserMealsUtil {
                 new UserMeal(of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
         );
 
+
         System.out.println("Реализация через циклы:");
         List<UserMealWithExcess> mealsToCycles = filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsToCycles.forEach(System.out::println);
