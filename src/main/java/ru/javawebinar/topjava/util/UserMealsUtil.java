@@ -68,7 +68,7 @@ public class UserMealsUtil {
         Map<LocalDate, Integer> sumCaloriesPerDay = meals.stream()
                 .collect(
                         Collectors.groupingBy(
-                                meal->meal.getDateTime().toLocalDate(),
+                                meal -> meal.getDateTime().toLocalDate(),
                                 Collectors.summingInt(UserMeal::getCalories)));
 
         return meals.stream()
