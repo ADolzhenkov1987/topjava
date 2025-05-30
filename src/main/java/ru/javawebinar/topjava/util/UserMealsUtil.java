@@ -39,11 +39,7 @@ public class UserMealsUtil {
                                                             int caloriesPerDay) {
         Map<LocalDate, Integer> sumCaloriesPerDay = new HashMap<>();
         for (UserMeal meal : meals) {
-            sumCaloriesPerDay.put(
-                    meal.getDateTime().toLocalDate(),
-                    sumCaloriesPerDay.get(meal.getDateTime().toLocalDate()) == null ?
-                            meal.getCalories() :
-                            sumCaloriesPerDay.get(meal.getDateTime().toLocalDate()) + meal.getCalories());
+            sumCaloriesPerDay.merge(meal.getDateTime().toLocalDate(), meal.getCalories(), Integer::sum);
         }
         List<UserMealWithExcess> resultMeals = new ArrayList<>();
         meals.forEach(meal -> {
@@ -53,7 +49,7 @@ public class UserMealsUtil {
                                 meal.getDateTime(),
                                 meal.getDescription(),
                                 meal.getCalories(),
-                                (int) sumCaloriesPerDay.get(meal.getDateTime().toLocalDate()) > caloriesPerDay
+                                sumCaloriesPerDay.get(meal.getDateTime().toLocalDate()) > caloriesPerDay
                         )
                 );
             }
@@ -77,7 +73,7 @@ public class UserMealsUtil {
                         meal.getDateTime(),
                         meal.getDescription(),
                         meal.getCalories(),
-                        (int) sumCaloriesPerDay.get(meal.getDateTime().toLocalDate()) > caloriesPerDay)
+                        sumCaloriesPerDay.get(meal.getDateTime().toLocalDate()) > caloriesPerDay)
                 )
                 .collect(Collectors.toList());
     }
