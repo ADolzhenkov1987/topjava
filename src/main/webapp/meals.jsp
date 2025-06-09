@@ -18,23 +18,16 @@
     <th>Update</th>
     <th>Delete</th>
   </tr>
-  <jsp:useBean id="mealsToStreams" scope="request" type="java.util.List"/>
-  <c:forEach items="${mealsToStreams}" var="meal">
-    <c:choose>
-      <c:when test="${meal.excess}">
-        <tr style = "text-align:left; color:red">
-      </c:when>
-      <c:otherwise>
-        <tr style = "text-align:left; color:green">
-      </c:otherwise>
-    </c:choose>
-    <f:parseDate value="${meal.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parcedDate" type="both"/>
-    <f:formatDate pattern="dd.MM.yyyy HH:mm" value="${parcedDate}" var="formattedDate"/>
-    <th><c:out value="${formattedDate}"/></th>
-    <th><c:out value="${meal.description}"/></th>
-    <th><c:out value="${meal.calories}"/></th>
-    <th></th>
-    <th></th>
+  <jsp:useBean id="mealsTo" scope="request" type="java.util.List"/>
+  <c:forEach items="${mealsTo}" var="meal">
+    <tr style = "${meal.excess ? "text-align:left; color:red": "text-align:left; color:green"}">
+      <f:parseDate value="${meal.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parcedDate" type="both"/>
+      <f:formatDate pattern="yyyy-MM-dd HH:mm" value="${parcedDate}" var="formattedDate"/>
+      <th>${formattedDate}</th>
+      <th>${meal.description}</th>
+      <th>${meal.calories}</th>
+      <th></th>
+      <th></th>
     </tr>
   </c:forEach>
 </table>
