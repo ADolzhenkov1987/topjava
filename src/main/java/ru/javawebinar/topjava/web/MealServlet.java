@@ -35,6 +35,7 @@ public class MealServlet extends HttpServlet {
             new Meal(6, LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500),
             new Meal(7, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
     ));
+    private static int counterMealId = 7;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -50,31 +51,44 @@ public class MealServlet extends HttpServlet {
             meals.remove(deletedMeal);
             List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY);
             request.setAttribute("mealsTo", mealsTo);
-            forward = LIST_MEAL;
+            response.sendRedirect("/topjava/meals?action=listMeal");
         } else if (action.equalsIgnoreCase("edit")) {
             Meal editedMeal = meals.stream()
                     .filter(meal -> meal.getMealId().equals(Integer.parseInt(request.getParameter("mealId"))))
                     .findFirst().orElse(null);
             request.setAttribute("meal", editedMeal);
             forward = INSERT_OR_EDIT;
+            RequestDispatcher view = request.getRequestDispatcher(forward);
+            view.forward(request, response);
         } else if (action.equalsIgnoreCase("listMeal")) {
             List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY);
             request.setAttribute("mealsTo", mealsTo);
             forward = LIST_MEAL;
+            RequestDispatcher view = request.getRequestDispatcher(forward);
+            view.forward(request, response);
         } else {
             forward = INSERT_OR_EDIT;
+            RequestDispatcher view = request.getRequestDispatcher(forward);
+            view.forward(request, response);
         }
-
-        RequestDispatcher view = request.getRequestDispatcher(forward);
-        view.forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-        Meal maxIdMeal = Collections.max(meals, Comparator.comparing(Meal::getMealId));
-
+        if (!Objects.equals(request.getParameter("mealId"), "")) {
+            Meal deletedMeal = meals.stream()
+                    .filter(meal -> meal.getMealId().equals(Integer.parseInt(request.getParameter("mealId"))))
+                    .findFirst().orElse(null);
+            meals.remove(deletedMeal);
+        }
+        {
+            synchronized (this) {
+                counterMealId++;
+            }
+        }
         meals.add(new Meal(
-                maxIdMeal.getMealId() + 1,
+                counterMealId,
                 parse(request.getParameter("mealDate"), formatter),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories"))
@@ -82,6 +96,6 @@ public class MealServlet extends HttpServlet {
         RequestDispatcher view = request.getRequestDispatcher(LIST_MEAL);
         List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY);
         request.setAttribute("mealsTo", mealsTo);
-        view.forward(request, response);
+        response.sendRedirect("/topjava/meals?action=listMeal");
     }
 }

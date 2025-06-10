@@ -7,23 +7,23 @@
     <title>Add new meal</title>
 </head>
 <body>
-<form method="POST" action='meal.jsp' name="frmAddMeal">
-    Meal ID : <label>
-    <input size="20" type="text" readonly="readonly" name="mealId"
+<form method="POST" action='${pageContext.request.contextPath}/meals?action=listMeal' name="frmAddMeal">
+    <label>
+    <input size="20" type="hidden" readonly="readonly" name="mealId"
            value="<c:out value="${meal.mealId}" />"/>
-</label> <br/>
+    </label> <br/>
     Date : <label>
-    <input size="20" type="datetime-local" name="date"
+    <input size="20" type="datetime-local" name="mealDate"
            value="<c:out value="${meal.dateTime}" />"/>
-</label> <br/>
+    </label> <br/>
     Description : <label>
     <input size="20" type="text" name="description"
-                         value="<c:out value="${meal.description}" />"/>
-</label> <br/>
+           value="<c:out value="${meal.description}" />"/>
+    </label> <br/>
     Calories : <label>
     <input size="20" type="text" name="calories"
-                      value="<c:out value="${meal.calories}" />"/>
-</label> <br/>
+           value="<c:out value="${meal.calories}" />"/>
+    </label> <br/>
 
     <input type="submit" value="Submit"/>
 </form>
