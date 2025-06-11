@@ -4,13 +4,10 @@ import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealsProcessing implements MealsDao {
+public class MealsDaoProcessingInMemory implements MealsDao {
 
     private List<Meal> meals = new ArrayList<>(Arrays.asList(
             new Meal(1, LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
@@ -24,37 +21,41 @@ public class MealsProcessing implements MealsDao {
 
     private final AtomicInteger counterMealId = new AtomicInteger(7);
 
-    public void addOrEditMeal(String mealId,
-                              String mealDate,
-                              String description,
-                              String calories) {
+
+    @Override
+    public void addOrEdit(int mealId,
+                          LocalDateTime mealDate,
+                          String description,
+                          int calories) {
         int newMealId;
 
-        if (!Objects.equals(mealId, "")) {
-            newMealId = Integer.parseInt(mealId);
-            deleteMeal(newMealId);
-        }
-        else{
+        if (mealId != -1) {
+            newMealId = mealId;
+            delete(newMealId);
+        } else {
             newMealId = counterMealId.incrementAndGet();
         }
         meals.add(new Meal(
                 newMealId,
-                LocalDateTime.parse(mealDate),
+                mealDate,
                 description,
-                Integer.parseInt(calories)
+                calories
         ));
     }
 
-    public void deleteMeal(int mealId) {
+    @Override
+    public void delete(int mealId) {
         meals.removeIf(meal -> meal.getMealId().equals(mealId));
     }
 
-    public Meal getMeal(String mealId) {
+    @Override
+    public Meal getMeal(int mealId) {
         return meals.stream()
-                .filter(meal -> meal.getMealId().equals(Integer.parseInt(mealId)))
+                .filter(meal -> meal.getMealId().equals(mealId))
                 .findFirst().orElse(null);
     }
 
+    @Override
     public List<Meal> getMeals() {
         return meals;
     }

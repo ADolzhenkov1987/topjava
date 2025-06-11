@@ -2,26 +2,19 @@ package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.model.Meal;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
-interface MealsDao {
-    List<Meal> meals = new ArrayList<>();
+public interface MealsDao {
+    void addOrEdit(int mealId,
+                   LocalDateTime mealDate,
+                   String description,
+                   int calories);
 
-    default void addOrEditMeal() {
+    void delete(int mealId);
 
-    }
+    Meal getMeal(int mealId);
 
-    default void deleteMeal() {
-
-    }
-
-    default Meal getMeal() {
-        return null;
-    }
-
-    default List<Meal> getMeals() {
-        return null;
-    }
+    List<Meal> getMeals();
 }
