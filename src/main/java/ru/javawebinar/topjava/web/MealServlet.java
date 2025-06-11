@@ -28,28 +28,20 @@ public class MealServlet extends HttpServlet {
         log.debug("redirect to meals");
 
         String forward;
-        String action = request.getParameter("action");
+        String action = request.getParameter("action") == null ? "" : request.getParameter("action");
 
-        if (action != null) {
-            if (action.equalsIgnoreCase("delete")) {
-                mealsProcessing.deleteMeal(Integer.parseInt(request.getParameter("mealId")));
-                response.sendRedirect("meals");
-            } else if (action.equalsIgnoreCase("edit")) {
-                request.setAttribute("meal", mealsProcessing.getMeal(request.getParameter("mealId")));
-                forward = INSERT_OR_EDIT;
-                RequestDispatcher view = request.getRequestDispatcher(forward);
-                view.forward(request, response);
-            } else if (action.equalsIgnoreCase("insert")) {
-                forward = INSERT_OR_EDIT;
-                RequestDispatcher view = request.getRequestDispatcher(forward);
-                view.forward(request, response);
-            } else {
-                List<Meal> meals = mealsProcessing.getMeals();
-                request.setAttribute("mealsTo", filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY));
-                forward = LIST_MEAL;
-                RequestDispatcher view = request.getRequestDispatcher(forward);
-                view.forward(request, response);
-            }
+        if (action.equalsIgnoreCase("delete")) {
+            mealsProcessing.deleteMeal(Integer.parseInt(request.getParameter("mealId")));
+            response.sendRedirect("meals");
+        } else if (action.equalsIgnoreCase("edit")) {
+            request.setAttribute("meal", mealsProcessing.getMeal(request.getParameter("mealId")));
+            forward = INSERT_OR_EDIT;
+            RequestDispatcher view = request.getRequestDispatcher(forward);
+            view.forward(request, response);
+        } else if (action.equalsIgnoreCase("insert")) {
+            forward = INSERT_OR_EDIT;
+            RequestDispatcher view = request.getRequestDispatcher(forward);
+            view.forward(request, response);
         } else {
             List<Meal> meals = mealsProcessing.getMeals();
             request.setAttribute("mealsTo", filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY));
