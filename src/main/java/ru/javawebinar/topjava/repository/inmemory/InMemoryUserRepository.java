@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class InMemoryUserRepository implements UserRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
     private final Map<Integer, User> usersMap = new ConcurrentHashMap<>();
-    private final AtomicInteger counterUserId  = new AtomicInteger(0);
+    private final AtomicInteger userIdCounter  = new AtomicInteger(0);
 
     @Override
     public boolean delete(int id) {
@@ -29,7 +29,7 @@ public class InMemoryUserRepository implements UserRepository {
     public User save(User user) {
         log.info("save {}", user);
         if (user.isNew()) {
-            user.setId(counterUserId.incrementAndGet());
+            user.setId(userIdCounter.incrementAndGet());
             usersMap.put(user.getId(), user);
             return user;
         }

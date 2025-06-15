@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -14,14 +15,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static ru.javawebinar.topjava.util.DateTimeUtil.isLocalDateIncluded;
+
 @Repository
 public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, Map<Integer, Meal>> userMealsMap = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.mealsUser.forEach(m -> save(m, 1));
-        MealsUtil.mealsAdmin.forEach(m -> save(m, 2));
+        MealsUtil.userMeals.forEach(m -> save(m, 1));
+        MealsUtil.adminMeals.forEach(m -> save(m, 2));
     }
 
     @Override
@@ -60,5 +63,10 @@ public class InMemoryMealRepository implements MealRepository {
                 .filter(filter)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Meal> getFilteredByDate(int userId, LocalDate startDate, LocalDate endDate) {
+        return filter(meal -> isLocalDateIncluded(meal.getDate(), startDate, endDate), userId);
     }
 }
