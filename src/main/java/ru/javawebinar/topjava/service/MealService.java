@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.service;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.jdbc.JdbcMealRepository;
 
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
 @Service
 public class MealService {
 
-    private final JdbcMealRepository repository;
+    private final MealRepository repository;
 
     public MealService(JdbcMealRepository repository) {
         this.repository = repository;
