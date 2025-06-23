@@ -27,14 +27,12 @@ public class MealTestData {
     public static final Meal userMeal5 = new Meal(START_SEQ + 8, LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500);
     public static final Meal userMeal6 = new Meal(START_SEQ + 9, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410);
 
-    public static final Meal adminMeal = new Meal(ADMIN_MEAL_ID, LocalDateTime.of(2025, Month.JUNE, 14, 10, 0), "Завтрак админа", 300);
-
     public static Meal getNew() {
         return new Meal(null, LocalDateTime.of(2025, Month.JUNE, 23, 15, 0), "Калорийный обед", 5000);
     }
 
     public static Meal getUpdated(int userId) {
-        Meal updated = userId == USER_ID ? new Meal(userMeal) : new Meal(adminMeal);
+        Meal updated = new Meal(userMeal);
         updated.setDateTime(LocalDateTime.of(2025, Month.JUNE, 23, 15, 0));
         updated.setDescription("Калорийный обед");
         updated.setCalories(5000);
