@@ -8,12 +8,10 @@ import java.time.Month;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.javawebinar.topjava.UserTestData.USER_ID;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class MealTestData {
     public static final int USER_MEAL_ID = START_SEQ + 3;
-    public static final int ADMIN_MEAL_ID = START_SEQ + 10;
     public static final int NOT_FOUND = 100;
 
     public static final LocalDate START_DATE = LocalDate.of(2020, Month.JANUARY, 31);
