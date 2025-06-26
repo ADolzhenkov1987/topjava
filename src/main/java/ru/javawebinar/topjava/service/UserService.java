@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
@@ -19,7 +18,6 @@ public class UserService {
     }
 
     public User create(User user) {
-        Assert.notNull(user, "user must not be null");
         return repository.save(user);
     }
 
@@ -32,7 +30,6 @@ public class UserService {
     }
 
     public User getByEmail(String email) {
-        Assert.notNull(email, "email must not be null");
         return checkNotFound(repository.getByEmail(email), "email=" + email);
     }
 
@@ -41,7 +38,6 @@ public class UserService {
     }
 
     public void update(User user) {
-        Assert.notNull(user, "user must not be null");
-        checkNotFound(repository.save(user), user.id());
+        checkNotFound(repository.save(user), user.getId());
     }
 }
