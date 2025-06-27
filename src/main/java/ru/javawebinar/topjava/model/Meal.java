@@ -23,7 +23,7 @@ public class Meal extends AbstractBaseEntity {
     public static final String BETWEEN_HALF_OPEN = "Meal.betweenHalfOpen";
     public static final String ALL_SORTED = "Meal.getAllSorted";
 
-    @Column(name = "date_time", nullable = false, columnDefinition = "timestamp default now()")
+    @Column(name = "date_time", nullable = false)
     @NotNull
     private LocalDateTime dateTime;
 
@@ -32,7 +32,7 @@ public class Meal extends AbstractBaseEntity {
     @Size(max = 256)
     private String description;
 
-    @Column(name = "calories", nullable = false, columnDefinition = "int default 10")
+    @Column(name = "calories", nullable = false)
     @Range(min = 10, max = 10000)
     private int calories;
 

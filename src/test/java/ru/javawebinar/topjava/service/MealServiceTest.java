@@ -1,8 +1,14 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -14,6 +20,9 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -28,9 +37,30 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @Ignore
 public class MealServiceTest {
+    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
+    private static final Map<String, Long> testTimes = new LinkedHashMap<>();
 
     @Autowired
     private MealService service;
+
+    @Rule
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void finished(long nanos, Description description) {
+            long timeNanos = TimeUnit.NANOSECONDS.toMillis(nanos);
+            log.info("Class {} passed tests by {} ms", description.getMethodName(), timeNanos);
+            testTimes.put(description.getMethodName(), timeNanos);
+        }
+    };
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        StringBuilder tests = new StringBuilder("\n\nClass tests:\n");
+        testTimes.forEach((testName, timeMillis) ->
+                tests.append(String.format("%-25s passed tests by %4d ms%n", testName, timeMillis))
+        );
+        log.info(tests.toString());
+    }
 
     @Test
     public void delete() {
