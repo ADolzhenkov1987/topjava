@@ -47,7 +47,7 @@ public class MealServiceTest {
         @Override
         protected void finished(long nanos, Description description) {
             long timeNanos = TimeUnit.NANOSECONDS.toMillis(nanos);
-            log.info("Class {} passed tests by {} ms", description.getMethodName(), timeNanos);
+            log.info("Class {} passed tests {} ms", description.getMethodName(), timeNanos);
             testTimes.put(description.getMethodName(), timeNanos);
         }
     };
