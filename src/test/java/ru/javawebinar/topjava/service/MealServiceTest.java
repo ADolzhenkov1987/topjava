@@ -35,7 +35,6 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 })
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@Ignore
 public class MealServiceTest {
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
     private static final Map<String, Long> testTimes = new LinkedHashMap<>();
@@ -57,7 +56,7 @@ public class MealServiceTest {
     public static void tearDownClass() throws Exception {
         StringBuilder tests = new StringBuilder("\n\nClass tests:\n");
         testTimes.forEach((testName, timeMillis) ->
-                tests.append(String.format("%-25s passed tests by %4d ms%n", testName, timeMillis))
+                tests.append(String.format("%-25s by %4d ms%n", testName, timeMillis))
         );
         log.info(tests.toString());
     }
