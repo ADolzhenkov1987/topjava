@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
@@ -42,8 +43,8 @@ public abstract class AbstractServiceTest {
     public final Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            String testType = getTestType();
-            String profile = getCurrentProfile();
+            String testType = AbstractServiceTest.this.getClass().getSimpleName();
+            String profile = Profiles.getActiveDbProfile();
             StringBuilder results = testResults
                     .computeIfAbsent(testType, k -> new LinkedHashMap<>())
                     .computeIfAbsent(profile, k -> new StringBuilder());
@@ -53,11 +54,12 @@ public abstract class AbstractServiceTest {
         }
     };
 
-    @After
-    public void printResult() {
+    @AfterClass
+    public static void printResult() {
         StringBuilder finalSummary = new StringBuilder();
         testResults.forEach((testType, profileResults) -> finalSummary.append(buildSummary(testType, profileResults)));
         log.info(finalSummary.toString());
+        testResults.clear();
     }
 
     private static String buildSummary(String testType, Map<String, StringBuilder> profileResults) {
@@ -75,11 +77,4 @@ public abstract class AbstractServiceTest {
         return summary.toString();
     }
 
-    private String getTestType() {
-        return getClass().getSimpleName();
-    }
-
-    private String getCurrentProfile() {
-        return Profiles.getActiveDbProfile();
-    }
 }
