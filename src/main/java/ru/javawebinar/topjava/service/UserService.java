@@ -48,7 +48,7 @@ public class UserService {
     @CacheEvict(value = "users", allEntries = true)
     public void update(User user) {
         Assert.notNull(user, "user must not be null");
-        checkNotFound(repository.save(user), user.id());
+        checkNotFound(repository.save(user), user.getId());
     }
 
     public User getWithMeals(int id) {

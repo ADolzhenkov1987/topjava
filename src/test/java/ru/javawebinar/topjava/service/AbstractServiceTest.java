@@ -1,6 +1,6 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
@@ -17,11 +17,9 @@ import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.Profiles;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -55,8 +53,8 @@ public abstract class AbstractServiceTest {
         }
     };
 
-    @AfterClass
-    public static void printResult() {
+    @After
+    public void printResult() {
         StringBuilder finalSummary = new StringBuilder();
         testResults.forEach((testType, profileResults) -> finalSummary.append(buildSummary(testType, profileResults)));
         log.info(finalSummary.toString());
@@ -78,18 +76,10 @@ public abstract class AbstractServiceTest {
     }
 
     private String getTestType() {
-        String className = getClass().getSimpleName();
-        return Stream.of(new String[]{"MealServiceTest", "UserServiceTest"})
-                .filter(className::contains)
-                .findFirst()
-                .orElse("UnknownTest");
+        return getClass().getSimpleName();
     }
 
     private String getCurrentProfile() {
-        List<String> validProfiles = List.of(Profiles.JDBC, Profiles.JPA, Profiles.DATAJPA);
-        return Stream.of(environment.getActiveProfiles())
-                .filter(validProfiles::contains)
-                .findFirst()
-                .orElse("default");
+        return Profiles.getActiveDbProfile();
     }
 }
