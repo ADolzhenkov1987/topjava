@@ -1,14 +1,11 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -35,9 +32,6 @@ public abstract class AbstractServiceTest {
     private static final Logger log = getLogger("result");
 
     private static final Map<String, Map<String, StringBuilder>> testResults = new LinkedHashMap<>();
-
-    @Autowired
-    private Environment environment;
 
     @Rule
     public final Stopwatch stopwatch = new Stopwatch() {
