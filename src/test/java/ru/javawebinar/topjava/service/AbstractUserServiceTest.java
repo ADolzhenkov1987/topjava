@@ -1,13 +1,10 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
-import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
@@ -16,11 +13,9 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assume.assumeFalse;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -29,14 +24,18 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     protected UserService service;
 
-    @Autowired
-    protected CacheManager cacheManager;
+    @Test
+    public void a_aupdate() {
+        User updated = getUpdated();
+        service.update(updated);
+        //USER_MATCHER.assertMatch(service.get(USER_ID), updated);
+        USER_MATCHER.assertMatch(service.getAll(), admin, guest, updated);
+    }
 
-    @Before
-    public void evictAllCaches(){
-        for(String name : cacheManager.getCacheNames()){
-            Objects.requireNonNull(cacheManager.getCache(name)).clear();
-        }
+    @Test
+    public void a_get() {
+        User user = service.get(USER_ID);
+        USER_MATCHER.assertMatch(user, UserTestData.user);
     }
 
     @Test
@@ -45,12 +44,6 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         service.update(updated);
         //USER_MATCHER.assertMatch(service.get(USER_ID), updated);
         USER_MATCHER.assertMatch(service.getAll(), admin, guest, updated);
-    }
-
-    @Test
-    public void b_getAll() {
-        List<User> all = service.getAll();
-        USER_MATCHER.assertMatch(all, admin, guest, user);
     }
 
     @Test
@@ -111,8 +104,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     }
 
     @Test
+
     public void createWithException() throws Exception {
-        assumeFalse(Profiles.getActiveDbProfile().equals(Profiles.JDBC));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "  ", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.USER)));
