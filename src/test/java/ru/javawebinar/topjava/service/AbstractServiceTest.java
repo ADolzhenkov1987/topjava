@@ -6,7 +6,6 @@ import org.junit.rules.ExternalResource;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,7 +14,6 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.TimingRules;
-import ru.javawebinar.topjava.repository.JpaUtil;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
@@ -23,6 +21,7 @@ import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
         "classpath:spring/spring-db.xml",
+        "classpath:spring/spring-cache-test.xml",
 })
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
@@ -36,7 +35,6 @@ public abstract class AbstractServiceTest {
     public Stopwatch stopwatch = TimingRules.STOPWATCH;
 
     @Autowired
-    @Qualifier("environment")
     protected Environment environment;
 
     //  Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778
