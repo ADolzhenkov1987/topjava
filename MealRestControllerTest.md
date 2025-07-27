@@ -4,13 +4,13 @@
 curl -s "http://localhost:8080/topjava/rest/user/meals"
 
 ### 2. get some meal
-curl -s "http://localhost:8080/topjava/rest/user/meals/100011"
+curl -s "http://localhost:8080/topjava/rest/user/meals/100010"
 
 ### 3. get meals filtered with date or time
 #### date without time
 curl -s "http://localhost:8080/topjava/rest/user/meals/filter?startDate=2020-01-30&endDate=2020-01-31"
 #### date with time
-curl -s "http://localhost:8080/topjava/rest/user/meals/filter?startDate=2020-01-30&endDate=2020-01-30&startTime=10:00&endTime=13:00"
+curl -s "http://localhost:8080/topjava/rest/user/meals/filter?startDate=2020-01-31&endDate=2020-01-31&startTime=10:00&endTime=14:00"
 
 ### 4. create new meal
 curl -X POST "http://localhost:8080/topjava/rest/user/meals" \
