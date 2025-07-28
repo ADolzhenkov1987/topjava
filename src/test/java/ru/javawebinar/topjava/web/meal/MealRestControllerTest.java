@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.web.meal;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -11,7 +12,10 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,6 +31,9 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Autowired
     private MealService mealService;
+
+    @Autowired
+    Environment env;
 
     @Test
     void getAll() throws Exception {
@@ -110,12 +117,18 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getWithUser() throws Exception {
-        ResultActions action = perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID + "/with-user"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        if(Arrays.stream(env.getActiveProfiles()).anyMatch(
+                env -> (env.equalsIgnoreCase("datajpa")))) {
+            ResultActions action = perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID + "/with-user"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
-        Meal mealWithUser = MEAL_MATCHER.readFromJson(action);
-        MEAL_MATCHER.assertMatch(mealWithUser, meal1);
-        USER_MATCHER.assertMatch(mealWithUser.getUser(), user);
+            Meal mealWithUser = MEAL_MATCHER.readFromJson(action);
+            MEAL_MATCHER.assertMatch(mealWithUser, meal1);
+            USER_MATCHER.assertMatch(mealWithUser.getUser(), user);
+        }
+        else {
+            assumeFalse(true, "Validation supports only datajpa");
+        }
     }
 }

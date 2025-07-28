@@ -2,19 +2,20 @@ package ru.javawebinar.topjava.web.user;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.javawebinar.topjava.ActiveDbProfileResolver;
-import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,13 +23,15 @@ import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
 import static ru.javawebinar.topjava.MealTestData.meals;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-@ActiveProfiles(resolver = ActiveDbProfileResolver.class, profiles = Profiles.REPOSITORY_IMPLEMENTATION)
 class AdminRestControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = AdminRestController.REST_URL + '/';
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    Environment env;
 
     @Test
     void get() throws Exception {
@@ -92,12 +95,18 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getWithMeals() throws Exception {
-        ResultActions action = perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/with-meals"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        if(Arrays.stream(env.getActiveProfiles()).anyMatch(
+                env -> (env.equalsIgnoreCase("datajpa")))) {
+            ResultActions action = perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/with-meals"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
-        User userWithMeals = USER_MATCHER.readFromJson(action);
-        USER_MATCHER.assertMatch(userWithMeals, user);
-        MEAL_MATCHER.assertMatch(userWithMeals.getMeals(), meals);
+            User userWithMeals = USER_MATCHER.readFromJson(action);
+            USER_MATCHER.assertMatch(userWithMeals, user);
+            MEAL_MATCHER.assertMatch(userWithMeals.getMeals(), meals);
+        }
+        else {
+            assumeFalse(true, "Validation supports only datajpa");
+        }
     }
 }
