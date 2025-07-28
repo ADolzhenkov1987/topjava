@@ -94,7 +94,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getWithMeals() throws Exception {
-        assumeTrue(env.acceptsProfiles(Profiles.of("datajpa")), "Validation supports only datajpa");
+        assumeTrue(env.acceptsProfiles(Profiles.of(ru.javawebinar.topjava.Profiles.DATAJPA)), "Tests expects correct answers only with datajpa");
 
         ResultActions action = perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/with-meals"))
                 .andExpect(status().isOk())
